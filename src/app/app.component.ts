@@ -24,10 +24,13 @@ interface Course {
 
 
 export class AppComponent {
+  public title: string;
   private chart: am4charts.XYChart;
    courses$: Observable<Course[]>;
 
-  constructor(private zone: NgZone, private httpclient:HttpClient ) {}
+  constructor(private zone: NgZone, private httpclient:HttpClient ) {
+    this.title="alibaba";
+  }
 
   //function to send get request
    getWall(){
@@ -35,6 +38,7 @@ export class AppComponent {
   };
 
   ngAfterViewInit() {
+
     this.zone.runOutsideAngular(() => {
       // Create chart instance
 		let chart = am4core.create("chartdiv", am4charts.XYChart);

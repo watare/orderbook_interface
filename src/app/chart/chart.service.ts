@@ -68,11 +68,12 @@ export class ChartService {
           list[i].totalvolume = list[i].volume;
         }
         let dp = {};
+        //creation des listes pouvant etre affichées
         dp["value"] = list[i].value;
         dp[type + "volume"] = list[i].volume;
         dp[type + "totalvolume"] = list[i].totalvolume;
 
-
+        //ajout de la nouvelle ligne au debut du tableau
         res.unshift(dp);
       }
     }
@@ -88,10 +89,13 @@ export class ChartService {
         dp["value"] = list[i].value;
         dp[type + "volume"] = list[i].volume;
         dp[type + "totalvolume"] = list[i].totalvolume;
+
+        //ajout d'une ligne à la fin du tableau
         res.push(dp);
       }
     }
   }
+
   processData(list, type, desc,res) {
     this.convertDataPoint(list);
     this.calculateVolume(list,type,desc,res);
@@ -125,7 +129,7 @@ export class ChartService {
     // Create axes
     let xAxis = this.chart.xAxes.push(new am4charts.CategoryAxis());
     xAxis.dataFields.category = "value";
-    //xAxis.renderer.grid.template.location = 0;
+    xAxis.renderer.grid.template.location = 0;
     xAxis.renderer.minGridDistance = 50;
     xAxis.title.text = "Price (BTC/ETH)";
 

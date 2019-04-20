@@ -18,6 +18,7 @@ export class ChartService {
     this.chart.dispose;
   }
 
+
   createChart(){
     // Create chart instance
     this.chart = am4core.create("chartservice", am4charts.XYChart);
@@ -26,78 +27,88 @@ export class ChartService {
   setDataSource(datasource: any){
     this.chart.dataSource.url = datasource //"https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_ETH&depth=50";
     this.chart.dataSource.reloadFrequency = 30000;
-    this.chart.dataSource.adapter.add("parsedData", function(data) {
+    this.chart.dataSource.adapter.add("parsedData",(data) => this.adapter(data));
+  }
 
+  chartlog(){
+    console.log("toto");
+  }
 
-    // Function to process (sort and calculate cummulative volume)
-    function processData(list, type, desc) {
-
-      // Convert to data points
-      for(var i = 0; i < list.length; i++) {
-        list[i] = {
-          value: Number(list[i][0]),
-          volume: Number(list[i][1]),
-        }
+  convertDataPoint(list){
+    // Convert to data points
+    for(var i = 0; i < list.length; i++) {
+      list[i] = {
+        value: Number(list[i][0]),
+        volume: Number(list[i][1]),
       }
-
-      // Sort list just in case
-      list.sort(function(a, b) {
-        if (a.value > b.value) {
-          return 1;
-        }
-        else if (a.value < b.value) {
-          return -1;
-        }
-        else {
-          return 0;
-        }
-      });
-
-      // Calculate cummulative volume
-      if (desc) {
-        for(var i = list.length - 1; i >= 0; i--) {
-          if (i < (list.length - 1)) {
-            list[i].totalvolume = list[i+1].totalvolume + list[i].volume;
-          }
-          else {
-            list[i].totalvolume = list[i].volume;
-          }
-          let dp = {};
-          dp["value"] = list[i].value;
-          dp[type + "volume"] = list[i].volume;
-          dp[type + "totalvolume"] = list[i].totalvolume;
-
-
-          res.unshift(dp);
-        }
-      }
-      else {
-        for(var i = 0; i < list.length; i++) {
-          if (i > 0) {
-            list[i].totalvolume = list[i-1].totalvolume + list[i].volume;
-          }
-          else {
-            list[i].totalvolume = list[i].volume;
-          }
-          let dp = {};
-          dp["value"] = list[i].value;
-          dp[type + "volume"] = list[i].volume;
-          dp[type + "totalvolume"] = list[i].totalvolume;
-          res.push(dp);
-        }
-      }
-
     }
 
-    // Init
-    let res = [];
-    processData(data.bids, "bids", true);
-    processData(data.asks, "asks", false);
-
-
-    return res;
-  });
+    // Sort list just in case
+    list.sort(function(a, b) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      else if (a.value < b.value) {
+        return -1;
+      }
+      else {
+        return 0;
+      }
+    });
   }
+
+  calculateVolume(list,type,desc,res){
+    // Calculate cummulative volume
+    if (desc) {
+      for(var i = list.length - 1; i >= 0; i--) {
+        if (i < (list.length - 1)) {
+          list[i].totalvolume = list[i+1].totalvolume + list[i].volume;
+        }
+        else {
+          list[i].totalvolume = list[i].volume;
+        }
+        let dp = {};
+        dp["value"] = list[i].value;
+        dp[type + "volume"] = list[i].volume;
+        dp[type + "totalvolume"] = list[i].totalvolume;
+
+
+        res.unshift(dp);
+      }
+    }
+    else {
+      for(var i = 0; i < list.length; i++) {
+        if (i > 0) {
+          list[i].totalvolume = list[i-1].totalvolume + list[i].volume;
+        }
+        else {
+          list[i].totalvolume = list[i].volume;
+        }
+        let dp = {};
+        dp["value"] = list[i].value;
+        dp[type + "volume"] = list[i].volume;
+        dp[type + "totalvolume"] = list[i].totalvolume;
+        res.push(dp);
+      }
+    }
+  }
+  processData(list, type, desc,res) {
+    this.convertDataPoint(list);
+    this.calculateVolume(list,type,desc,res);
+  }
+
+
+  adapter(data) {
+  // Function to process (sort and calculate cummulative volume)
+
+  // Init
+  let res = [];
+  this.processData(data.bids, "bids", true,res);
+  this.processData(data.asks, "asks", false,res);
+  return res;
+
+  }
+
 
   setTheRest(){
     this.precision();

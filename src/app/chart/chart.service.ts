@@ -27,12 +27,12 @@ export class ChartService {
   setDataSource(datasource: any){
     this.chart.dataSource.url = datasource //"https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_ETH&depth=50";
     this.chart.dataSource.reloadFrequency = 30000;
-    this.chart.dataSource.adapter.add("parsedData",(data) => this.adapter(data));
+    this.chart.dataSource.adapter.add("parsedData",(data) => this.adapter_treated(data));
   }
 
   chartlog(){
     console.log("toto");
-  }
+  }dataSource
 
   convertDataPoint(list){
     // Convert to data points
@@ -56,8 +56,14 @@ export class ChartService {
       }
     });
   }
-
-  calculateVolume(list,type,desc,res){
+  calculatetotalvolume(list){
+    let total = 0;
+    for(var i = 0; i < list.length; i++){
+      total=list[i].volume+total;
+    }
+    return total
+  }
+  createDataSet(list,type,desc,res,totalvol){
     // Calculate cummulative volume
     if (desc) {
       for(var i = list.length - 1; i >= 0; i--) {
@@ -72,6 +78,12 @@ export class ChartService {
         dp["value"] = list[i].value;
         dp[type + "volume"] = list[i].volume;
         dp[type + "totalvolume"] = list[i].totalvolume;
+
+        if (list[i].volume > 0.1 * totalvol){
+          dp[type + "wall"] = 1000;
+        }else{
+          dp[type + "wall"] = 0;
+        }
 
         //ajout de la nouvelle ligne au debut du tableau
         res.unshift(dp);
@@ -90,18 +102,33 @@ export class ChartService {
         dp[type + "volume"] = list[i].volume;
         dp[type + "totalvolume"] = list[i].totalvolume;
 
+        if (list[i].volume > 0.1 * totalvol){
+          dp[type + "wall"] = 1000;
+        }else{
+          dp[type + "wall"] = 0;
+        }
         //ajout d'une ligne à la fin du tableau
         res.push(dp);
       }
     }
   }
 
+  detectwall(res){
+    const arr = res.map(x => Object.assign({}, res, { "new column": "" }));
+    return arr;
+  }
   processData(list, type, desc,res) {
     this.convertDataPoint(list);
-    this.calculateVolume(list,type,desc,res);
+    let totalvol = this.calculatetotalvolume(list);
+    this.createDataSet(list,type,desc,res,totalvol);
+
   }
+//data pretraite avec script python
+  adapter_treated(data){
+    console.log (data["data"]);
+    return data["data"];
 
-
+  }
   adapter(data) {
   // Function to process (sort and calculate cummulative volume)
 
@@ -141,7 +168,7 @@ export class ChartService {
     // Create series
     let series = this.chart.series.push(new am4charts.StepLineSeries());
     series.dataFields.categoryX = "value";
-    series.dataFields.valueY = "bidstotalvolume";
+    series.dataFields.valueY = "askstotalvolume";
     series.strokeWidth = 2;
     series.stroke = am4core.color("#0f0");
     series.fill = series.stroke;
@@ -150,12 +177,12 @@ export class ChartService {
 
     let series2 = this.chart.series.push(new am4charts.StepLineSeries());
     series2.dataFields.categoryX = "value";
-    series2.dataFields.valueY = "askstotalvolume";
+    series2.dataFields.valueY = "bidstotalvolume";
     series2.strokeWidth = 2;
     series2.stroke = am4core.color("#f00");
     series2.fill = series2.stroke;
     series2.fillOpacity = 0.1;
-    series2.tooltipText = "Ask: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{asksvolume}[/]"
+    series2.tooltipText = "Bids: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{asksvolume}[/]"
 
     let series3 = this.chart.series.push(new am4charts.ColumnSeries());
     series3.dataFields.categoryX = "value";
@@ -169,7 +196,23 @@ export class ChartService {
     series4.dataFields.valueY = "asksvolume";
     series4.strokeWidth = 0;
     series4.fill = am4core.color("#000");
-    series4.fillOpacity = 0.2;
+    series4.fillOpacity = 0.2
+
+    //series affichant le résultat de l'algo de detection de wall
+    let series5 = this.chart.series.push(new am4charts.ColumnSeries());
+    series5.dataFields.categoryX = "value";
+    series5.dataFields.valueY = "bidswall";
+    series5.strokeWidth = 2;
+    series5.fill = am4core.color("#00F");
+    series5.fillOpacity = 1;
+
+    let series6 = this.chart.series.push(new am4charts.ColumnSeries());
+    series6.dataFields.categoryX = "value";
+    series6.dataFields.valueY = "askswall";
+    series6.strokeWidth = 2;
+    series6.fill = am4core.color("#00F");
+    series6.fillOpacity = 1
+
   }
 
   addCursor(){

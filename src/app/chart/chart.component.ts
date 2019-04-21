@@ -14,7 +14,7 @@ export class ChartComponent  {
   ngAfterViewInit() {
     this.zone.runOutsideAngular(() => {
       this.chart.createChart();
-      this.chart.setDataSource("/assets/data_poloniex.json");
+      this.chart.setDataSource("/assets/data_treated.json");
       this.chart.setTheRest();
     });
   }

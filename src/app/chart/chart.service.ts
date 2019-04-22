@@ -143,10 +143,7 @@ export class ChartService {
 
 
   setTheRest(){
-    this.precision();
-    this.createAxes();
-    this.createSeries("assets/data_treated.json");
-    this.addCursor();
+
   }
   precision(){
     // Set up precision for numbers
@@ -219,8 +216,14 @@ export class ChartService {
         series6.strokeWidth = 2;
         series6.fill = am4core.color("#00F");
         series6.fillOpacity = 1
-    };
+    }else if (charttype == "ohlcv"){
+      //rentrer ici les series presentes dans le fichier
+    }else if (charttype == "sma"){
+    //etc
+    }
+
   }
+
 
   addCursor(){
     // Add cursor

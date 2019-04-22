@@ -10,7 +10,7 @@ import {ChartService} from './chart.service';
 export class ChartComponent  {
   graphUrl = '';
   graphtype ='';
-  datagraph = [];
+  //datagraph = [];
   constructor(private chart: ChartService, private zone: NgZone) { }
 
   chartType(graphtype : string){

@@ -1,3 +1,5 @@
   <div id="chartservice" style="width: 100%; height: 500px"></div>
-  <input #box (keyup.enter)="onEnter(box.value)">
-    <p>{{values}}</p>
+  <input #url (keyup.enter)="onEnter(url.value)">
+  <input #type (keyup)="chartType(type.value)">
+  <p>{{graphtype}}</p>
+  <p>{{graphUrl}}</p>

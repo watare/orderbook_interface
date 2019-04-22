@@ -8,18 +8,26 @@ import {ChartService} from './chart.service';
   providers:[ChartService],
 })
 export class ChartComponent  {
-  values = '';
+  graphUrl = '';
+  graphtype ='';
   datagraph = [];
   constructor(private chart: ChartService, private zone: NgZone) { }
 
-  onEnter(values: string) {
-    this.values = values;
-    this.datagraph.push(this.values);
+  chartType(graphtype : string){
+    this.graphtype = graphtype;
+    console.log(this.graphtype);
+  }
+  onEnter(graphUrl: string) {
+    this.graphUrl = graphUrl;
 
     this.zone.runOutsideAngular(() => {
       this.chart.createChart();
-      this.chart.setDataSource(this.values);
-      this.chart.setTheRest();
+      this.chart.setDataSource(this.graphUrl);
+      this.chart.precision();
+      this.chart.createAxes();
+      console.log(this.graphtype);
+      this.chart.createSeries(this.graphtype);
+      this.chart.addCursor();
     });
    }
 

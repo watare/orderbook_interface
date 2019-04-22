@@ -10,6 +10,7 @@ am4core.useTheme(am4themes_animated);
 })
 export class ChartService {
   chart :any;
+  charttype :any;
   constructor() {
 
   }
@@ -164,59 +165,61 @@ export class ChartService {
     yAxis.title.text = "Volume";
   }
 
-  createSeries(json){
+  createSeries(charttype){
       //var data = JSON.parse(json);
       //console.log(data);
       //if(data.hasOwnProperty('askstotalvolume')){
+      if (charttype == "orderbook") {
 
-      // Create series
-      let series = this.chart.series.push(new am4charts.StepLineSeries());
-      series.dataFields.categoryX = "value";
-      series.dataFields.valueY = "askstotalvolume";
-      series.strokeWidth = 2;
-      series.stroke = am4core.color("#0f0");
-      series.fill = series.stroke;
-      series.fillOpacity = 0.1;
-      series.tooltipText = "Ask: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{bidsvolume}[/]"
 
-      let series2 = this.chart.series.push(new am4charts.StepLineSeries());
-      series2.dataFields.categoryX = "value";
-      series2.dataFields.valueY = "bidstotalvolume";
-      series2.strokeWidth = 2;
-      series2.stroke = am4core.color("#f00");
-      series2.fill = series2.stroke;
-      series2.fillOpacity = 0.1;
-      series2.tooltipText = "Bids: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{asksvolume}[/]"
+        // Create series
+        let series = this.chart.series.push(new am4charts.StepLineSeries());
+        series.dataFields.categoryX = "value";
+        series.dataFields.valueY = "askstotalvolume";
+        series.strokeWidth = 2;
+        series.stroke = am4core.color("#0f0");
+        series.fill = series.stroke;
+        series.fillOpacity = 0.1;
+        series.tooltipText = "Ask: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{bidsvolume}[/]"
 
-      let series3 = this.chart.series.push(new am4charts.ColumnSeries());
-      series3.dataFields.categoryX = "value";
-      series3.dataFields.valueY = "bidsvolume";
-      series3.strokeWidth = 0;
-      series3.fill = am4core.color("#000");
-      series3.fillOpacity = 0.2;
+        let series2 = this.chart.series.push(new am4charts.StepLineSeries());
+        series2.dataFields.categoryX = "value";
+        series2.dataFields.valueY = "bidstotalvolume";
+        series2.strokeWidth = 2;
+        series2.stroke = am4core.color("#f00");
+        series2.fill = series2.stroke;
+        series2.fillOpacity = 0.1;
+        series2.tooltipText = "Bids: [bold]{categoryX}[/]\nTotal volume: [bold]{valueY}[/]\nVolume: [bold]{asksvolume}[/]"
 
-      let series4 = this.chart.series.push(new am4charts.ColumnSeries());
-      series4.dataFields.categoryX = "value";
-      series4.dataFields.valueY = "asksvolume";
-      series4.strokeWidth = 0;
-      series4.fill = am4core.color("#000");
-      series4.fillOpacity = 0.2
+        let series3 = this.chart.series.push(new am4charts.ColumnSeries());
+        series3.dataFields.categoryX = "value";
+        series3.dataFields.valueY = "bidsvolume";
+        series3.strokeWidth = 0;
+        series3.fill = am4core.color("#000");
+        series3.fillOpacity = 0.2;
 
-      //series affichant le résultat de l'algo de detection de wall
-      let series5 = this.chart.series.push(new am4charts.ColumnSeries());
-      series5.dataFields.categoryX = "value";
-      series5.dataFields.valueY = "bidswall";
-      series5.strokeWidth = 2;
-      series5.fill = am4core.color("#00F");
-      series5.fillOpacity = 1;
+        let series4 = this.chart.series.push(new am4charts.ColumnSeries());
+        series4.dataFields.categoryX = "value";
+        series4.dataFields.valueY = "asksvolume";
+        series4.strokeWidth = 0;
+        series4.fill = am4core.color("#000");
+        series4.fillOpacity = 0.2
 
-      let series6 = this.chart.series.push(new am4charts.ColumnSeries());
-      series6.dataFields.categoryX = "value";
-      series6.dataFields.valueY = "askswall";
-      series6.strokeWidth = 2;
-      series6.fill = am4core.color("#00F");
-      series6.fillOpacity = 1
-  //}
+        //series affichant le résultat de l'algo de detection de wall
+        let series5 = this.chart.series.push(new am4charts.ColumnSeries());
+        series5.dataFields.categoryX = "value";
+        series5.dataFields.valueY = "bidswall";
+        series5.strokeWidth = 2;
+        series5.fill = am4core.color("#00F");
+        series5.fillOpacity = 1;
+
+        let series6 = this.chart.series.push(new am4charts.ColumnSeries());
+        series6.dataFields.categoryX = "value";
+        series6.dataFields.valueY = "askswall";
+        series6.strokeWidth = 2;
+        series6.fill = am4core.color("#00F");
+        series6.fillOpacity = 1
+    };
   }
 
   addCursor(){

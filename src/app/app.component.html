@@ -3,11 +3,4 @@
   <h1>
     Welcome to {{ title }}!
   </h1>
-  <app-chart></app-chart>  
-<button (click)="getWall()">Getwall</button>
-<ul *ngIf="courses$ | async as courses else noData">
-          <li *ngFor="let course of courses">
-              {{course.description}}
-          </li>
-      </ul>
-      <ng-template #noData>No Data Available</ng-template>
+  <app-chart></app-chart>

@@ -8,15 +8,29 @@ import {ChartService} from './chart.service';
   providers:[ChartService],
 })
 export class ChartComponent  {
-
+  values = '';
+  datagraph = [];
   constructor(private chart: ChartService, private zone: NgZone) { }
 
-  ngAfterViewInit() {
+  onEnter(values: string) {
+    this.values = values;
+    this.datagraph.push(this.values);
+
     this.zone.runOutsideAngular(() => {
       this.chart.createChart();
-      this.chart.setDataSource("/assets/data_treated.json");
+      this.chart.setDataSource(this.values);
       this.chart.setTheRest();
     });
+   }
+
+
+  ngDoCheck() {
+    //this.datagraph.push()
+  /*  this.zone.runOutsideAngular(() => {
+      this.chart.createChart();
+      this.chart.setDataSource(this.values);
+      this.chart.setTheRest();
+    });*/
   }
 
   ngOnDestroy() {
